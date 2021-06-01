@@ -1,0 +1,190 @@
+//Este código será usado para testes iniciais no projeto da bomba de seringa
+//Cotém 3 códigos similares para teste
+//(01) Simples exemplo para gerenciar uma volta completa para frente e duas para trás
+//(02) Exemplo similar ao anterior, porém usando um botão
+//(03) Exemplo similar ao anterior, agora contando quantas vezes o botão é tocado
+//(04) Exemplo de teste utilizando um potenciômetro
+
+#include <Stepper.h>
+/////////////////////////////////////////////////////////////////(01)///////////////////////////////////////////////////////////
+
+// Definindo passo e direção do motor
+const int stepPin = 3; 
+const int dirPin = 4; 
+
+#define Passos_Motor 200
+
+void setup() 
+{
+  pinMode(stepPin,OUTPUT); 
+  pinMode(dirPin,OUTPUT);
+}
+
+void loop() 
+{
+  digitalWrite(dirPin,HIGH); 
+  // Habilita o motor se mover em determinada direção.
+  for(int x = 0; x < Passos_Motor; x++) 
+    {
+        digitalWrite(stepPin,HIGH); 
+        delayMicroseconds(500); 
+        digitalWrite(stepPin,LOW); 
+        delayMicroseconds(500); 
+    }
+  delay(1000); // 1000 == 1 segundo
+  
+  digitalWrite(dirPin,LOW); 
+  // Muda o sentido da rotação. 
+  // Será usado o dobro de rotação para ficar claro qual direção é qual
+  for(int x = 0; x < Passos_Motor * 2; x++) 
+    {
+        digitalWrite(stepPin,HIGH);
+        delayMicroseconds(500);
+        digitalWrite(stepPin,LOW);
+        delayMicroseconds(500);
+    }
+  delay(1000);
+}
+/////////////////////////////////////////////////////////////////(02)///////////////////////////////////////////////////////////
+
+// Definindo passo e direção do motor
+const int stepPin = 3; 
+const int dirPin = 4;
+const int botao = 5;
+int estadoBotao = 0;
+int mover = LOW; 
+
+#define Passos_Motor 200
+
+void setup() 
+{
+  pinMode(stepPin,OUTPUT); 
+  pinMode(dirPin,OUTPUT);
+  pinMode(botao,INPUT);
+}
+
+void loop() 
+{
+    estadoBotao = digitalRead(botao);
+    if(estadoBotao == HIGH)
+    {
+        mover = !mover;
+        delay(500);
+    }
+    if(mover == HIGH)
+    {
+        digitalWrite(dirPin,HIGH); 
+        // Habilita o motor se mover em determinada direção.
+        for(int x = 0; x < Passos_Motor; x++) 
+            {
+                digitalWrite(stepPin,HIGH); 
+                delayMicroseconds(500); 
+                digitalWrite(stepPin,LOW); 
+                delayMicroseconds(500); 
+            }
+        delay(1000); // 1000 == 1 segundo
+
+        digitalWrite(dirPin,LOW); 
+        // Muda o sentido da rotação. 
+        // Será usado o dobro de rotação para ficar claro qual direção é qual
+        for(int x = 0; x < Passos_Motor * 2; x++) 
+            {
+                digitalWrite(stepPin,HIGH);
+                delayMicroseconds(500);
+                digitalWrite(stepPin,LOW);
+                delayMicroseconds(500);
+            }
+        delay(1000);
+    }
+    else
+    {
+        digitalWrite(stepPin,LOW);
+        delayMicroseconds(500);
+    }
+
+}
+/////////////////////////////////////////////////////////////////(03)///////////////////////////////////////////////////////////
+
+// Definindo passo e direção do motor
+const int stepPin = 3; 
+const int dirPin = 4;
+const int botao = 5;
+int estadoBotao = 0;
+int mover = 0; 
+
+void setup() 
+{
+  pinMode(stepPin,OUTPUT); 
+  pinMode(dirPin,OUTPUT);
+  pinMode(botao,INPUT);
+}
+
+void loop() 
+{
+    estadoBotao = digitalRead(botao);
+    if(estadoBotao == HIGH)
+    {
+        mover++;
+        delay(500);
+    }
+    if (mover % 3 == 0)
+    {
+        digitalWrite(stepPin,LOW);
+        delayMicroseconds(500);
+    }
+    else if (mover % 3 == 1)
+    {
+        for(int x = 0; x < Passos_Motor; x++) 
+            {
+                digitalWrite(stepPin,HIGH); 
+                delayMicroseconds(500); 
+                digitalWrite(stepPin,LOW); 
+                delayMicroseconds(500); 
+            }
+        delay(1000); // 1000 == 1 segundo
+    }
+    else if (mover % 3 == 2)
+    {
+        for(int x = 0; x < Passos_Motor; x++) 
+            {
+                digitalWrite(stepPin,HIGH);
+                delayMicroseconds(500);
+                digitalWrite(stepPin,LOW);
+                delayMicroseconds(500);
+            }
+        delay(1000);
+    }
+}
+
+/////////////////////////////////////////////////////////////////(04)///////////////////////////////////////////////////////////
+
+// Definindo passo e direção do motor
+//O potenciômetro estará na casa 0 (analógica)
+const int stepPin = 3;
+const int dirPin = 4; 
+int customDelay,customDelayMapped; // Define as variáveis
+ 
+void setup() 
+{
+  pinMode(stepPin,OUTPUT);
+  pinMode(dirPin,OUTPUT);
+ 
+  digitalWrite(dirPin,HIGH); //Irá fixar uma direção no motor
+}
+void loop() 
+{
+  
+  customDelayMapped = speedUp(); // Pega os valores da função speedUp 
+  
+  digitalWrite(stepPin, HIGH);
+  delayMicroseconds(customDelayMapped);
+  digitalWrite(stepPin, LOW);
+  delayMicroseconds(customDelayMapped);
+}
+// Função para ler o potenciômetro
+int speedUp() 
+{
+  int customDelay = analogRead(0); // Lê o potenciômetro
+  int newCustom = map(customDelay, 0, 1023, 300, 4000); // Converte os valores lidos do potenciômetro de 0 para 1023 nos valores de atraso desejados (300 para 4000)
+  return newCustom;  
+}
