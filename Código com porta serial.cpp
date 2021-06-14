@@ -3,17 +3,17 @@
 #define X_STP 2
 
 int delayTime = 800;
-int stps=1200;
+//int stps = 1200;
 
-void step(boolean dir, byte dirPin, byte stepperPin, int steps)
+void step(boolean dir)
 {
-  digitalWrite(dirPin, dir);
+  digitalWrite(X_DIR, dir);
   delay(100);
   while(1)
   {
-    digitalWrite(stepperPin, HIGH);
+    digitalWrite(X_STP, HIGH);
     delayMicroseconds(delayTime);
-    digitalWrite(stepperPin, LOW);
+    digitalWrite(X_STP, LOW);
     delayMicroseconds(delayTime);
     char c = Serial.read();
     if(c == 'p')
@@ -22,13 +22,12 @@ void step(boolean dir, byte dirPin, byte stepperPin, int steps)
     }
     else if(c == 'f')
     {
-      step(false, X_DIR, X_STP, stps);
+      step(false);
     }
     else if(c == 't')
     {
-      step(true, X_DIR, X_STP, stps);
+      step(true);
     }
-    
   }
 }
 
@@ -44,17 +43,13 @@ void loop()
   char c = Serial.read();
   if (c == 'f')
   {
-     step(false, X_DIR, X_STP, stps);
+    step(false);
   }
   delay(100);  
-  if(c == 't')
+  else if(c == 't')
   {
-     step(true, X_DIR, X_STP, stps);
+    step(true);
   }
   delay(100);
-  if(c == 'p')
-  {
-      delay(1000);
-  }
 
 }
